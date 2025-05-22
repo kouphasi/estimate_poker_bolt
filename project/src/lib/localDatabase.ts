@@ -38,6 +38,11 @@ class LocalDatabase {
       ? JSON.parse(savedData) 
       : { projects: [], tasks: [], estimations: [] };
 
+    // Seed the database with initial data if it's empty
+    if (this.storage.projects.length === 0) {
+      this.seedDatabase();
+    }
+
     this.channels = [];
     
     // Initialize auth data
@@ -45,6 +50,45 @@ class LocalDatabase {
     this.authData = savedAuthData 
       ? JSON.parse(savedAuthData) 
       : { user: null, listeners: [] };
+  }
+
+  // Seed the database with initial data for testing
+  private seedDatabase(): void {
+    // Create a test user
+    const userId = 'test-user-123';
+    
+    // Create a project
+    const projectId = uuidv4();
+    const timestamp = new Date().toISOString();
+    
+    this.storage.projects.push({
+      id: projectId,
+      name: 'Sample Project',
+      description: 'This is a sample project created for testing purposes',
+      created_at: timestamp,
+      user_id: userId,
+      is_completed: false,
+      final_estimation: null
+    });
+
+    // Create a task
+    const taskId = uuidv4();
+    const estimationUrl = uuidv4();
+    
+    this.storage.tasks.push({
+      id: taskId,
+      project_id: projectId,
+      name: 'Sample Task',
+      description: 'This is a sample task created for testing purposes',
+      created_at: timestamp,
+      is_completed: false,
+      final_estimation: null,
+      show_estimations: false,
+      estimation_url: estimationUrl
+    });
+
+    // Save the seeded data
+    this.saveData();
   }
 
   // Save data to localStorage
