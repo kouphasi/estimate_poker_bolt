@@ -31,13 +31,17 @@ export default function Login() {
     setLoading(true);
     setError(null);
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    // For local database, signIn is sufficient since it creates a user if it doesn't exist
+    const { error: signUpError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (signUpError) {
       setError(signUpError.message);
+    } else {
+      // Show success message for local implementation
+      alert('Signed up and logged in successfully!');
     }
 
     setLoading(false);
