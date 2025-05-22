@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { Button } from './button';
 
 describe('Button component', () => {
@@ -29,7 +29,8 @@ describe('Button component', () => {
     render(<Button onClick={handleClick}>Clickable</Button>);
     
     const button = screen.getByRole('button', { name: /clickable/i });
-    await userEvent.click(button);
+    const user = userEvent.setup();
+    await user.click(button);
     
     expect(handleClick).toHaveBeenCalledTimes(1);
   });

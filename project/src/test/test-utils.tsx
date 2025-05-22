@@ -1,6 +1,5 @@
 import { cleanup, render } from '@testing-library/react';
 import { afterEach } from 'vitest';
-import { BrowserRouter } from 'react-router-dom';
 import React from 'react';
 
 // Clean up after each test
@@ -12,7 +11,7 @@ afterEach(() => {
 export function renderWithRouter(ui: React.ReactElement, { route = '/' } = {}) {
   window.history.pushState({}, 'Test page', route);
   
-  return render(ui, { wrapper: BrowserRouter });
+  return render(ui);
 }
 
 // Export everything from RTL
