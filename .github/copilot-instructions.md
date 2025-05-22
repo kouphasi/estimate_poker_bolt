@@ -1,5 +1,5 @@
 # GitHub Copilot Instructions
-
+checkout branch from development
 ## Setup
 
 To use GitHub Copilot in this project, follow these steps:
