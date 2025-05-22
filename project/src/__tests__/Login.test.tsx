@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import Login from '@/pages/Login';
 import { supabase } from '@/lib/supabase';
 
@@ -35,7 +35,7 @@ describe('Login Component', () => {
 
   test('handles sign in submission', async () => {
     // Mock successful sign in
-    (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+    (supabase.auth.signInWithPassword).mockResolvedValue({
       data: { user: { id: '123' } },
       error: null,
     });
@@ -47,20 +47,20 @@ describe('Login Component', () => {
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
     
     // Submit the form
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    });
     
     // Verify that signInWithPassword was called with the right params
-    await waitFor(() => {
-      expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+    expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
     });
   });
 
   test('handles sign up button click', async () => {
     // Mock successful sign up
-    (supabase.auth.signUp as jest.Mock).mockResolvedValue({
+    (supabase.auth.signUp).mockResolvedValue({
       data: { user: { id: '123' } },
       error: null,
     });
@@ -72,20 +72,20 @@ describe('Login Component', () => {
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } });
     
     // Click sign up button
-    fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /sign up/i }));
+    });
     
     // Verify that signUp was called with the right params
-    await waitFor(() => {
-      expect(supabase.auth.signUp).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
-      });
+    expect(supabase.auth.signUp).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
     });
   });
 
   test('displays error message when sign in fails', async () => {
     // Mock failed sign in
-    (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValue({
+    (supabase.auth.signInWithPassword).mockResolvedValue({
       data: null,
       error: { message: 'Invalid login credentials' },
     });
@@ -97,11 +97,11 @@ describe('Login Component', () => {
     fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'wrong-password' } });
     
     // Submit the form
-    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    });
     
     // Check for error message
-    await waitFor(() => {
-      expect(screen.getByText('Invalid login credentials')).toBeInTheDocument();
-    });
+    expect(screen.getByText('Invalid login credentials')).toBeInTheDocument();
   });
 });
