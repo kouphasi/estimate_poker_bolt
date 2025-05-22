@@ -4,7 +4,6 @@ import { User } from '@supabase/supabase-js';
 
 // Type definitions for mimicking Supabase client
 type StorageTables = keyof Database['public']['Tables'];
-type StorageTablesData<T extends StorageTables> = Database['public']['Tables'][T]['Row'][];
 type ChannelCallback = () => void;
 
 interface StorageData {
@@ -104,7 +103,7 @@ class LocalDatabase {
   // Authentication methods
   auth = {
     // Mock sign in
-    signInWithPassword: async ({ email, password }: { email: string; password: string }) => {
+    signInWithPassword: async ({ email }: { email: string; password: string }) => {
       const mockUser = {
         id: 'local-user-id',
         email,
@@ -151,7 +150,7 @@ class LocalDatabase {
     },
 
     // Auth state change subscription
-    onAuthStateChange: (callback: (event: string, session: any) => void) => {
+    onAuthStateChange: (callback: (event: string, session: { user: User } | null) => void) => {
       const listener = (user: User | null) => {
         callback(user ? 'SIGNED_IN' : 'SIGNED_OUT', user ? { user } : null);
       };
@@ -176,7 +175,7 @@ class LocalDatabase {
         // Handle JOIN query with special syntax for projects!inner(*)
         if (selection.includes('projects!inner(*)')) {
           return {
-            eq: (field: string, value: any) => {
+            eq: (field: string, value: unknown) => {
               const filteredData = this.storage[table].filter(item => item[field as keyof typeof item] === value);
               
               if (filteredData.length === 0) {
@@ -188,7 +187,7 @@ class LocalDatabase {
               
               // Join with projects
               const joinedData = filteredData.map(item => {
-                const projectId = (item as any).project_id;
+                const projectId = (item as { project_id: string }).project_id;
                 const project = this.storage.projects.find(p => p.id === projectId);
                 
                 return {
@@ -210,7 +209,7 @@ class LocalDatabase {
         }
         
         return {
-          eq: (field: string, value: any) => {
+          eq: (field: string, value: unknown) => {
             return {
               order: (orderField: string, { ascending }: { ascending: boolean }) => {
                 const filteredData = this.storage[table].filter(item => item[field as keyof typeof item] === value);
@@ -266,7 +265,7 @@ class LocalDatabase {
           }
         };
       },
-      insert: (items: any[]) => {
+      insert: (items: Record<string, unknown>[]) => {
         return {
           select: () => {
             const newItems = items.map(item => {
@@ -278,7 +277,9 @@ class LocalDatabase {
               };
             });
 
-            this.storage[table] = [...this.storage[table], ...newItems];
+            // We're performing a type-safe operation but TypeScript can't infer it correctly
+            // Using type assertion to help TypeScript understand the operation
+            this.storage[table] = [...this.storage[table], ...newItems] as StorageData[T];
             this.saveData();
 
             // Trigger any subscriptions for this table
@@ -297,9 +298,9 @@ class LocalDatabase {
           }
         };
       },
-      update: (updateData: any) => {
+      update: (updateData: Record<string, unknown>) => {
         return {
-          eq: (field: string, value: any) => {
+          eq: (field: string, value: unknown) => {
             const index = this.storage[table].findIndex(item => item[field as keyof typeof item] === value);
             
             if (index !== -1) {
@@ -322,7 +323,7 @@ class LocalDatabase {
       },
       delete: () => {
         return {
-          eq: (field: string, value: any) => {
+          eq: (field: string, value: unknown) => {
             const index = this.storage[table].findIndex(item => item[field as keyof typeof item] === value);
             
             if (index !== -1) {
@@ -350,7 +351,8 @@ class LocalDatabase {
   };
 
   // Realtime subscriptions
-  channel = (channelName: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  channel = (name: string) => {
     return {
       on: (
         event: string,

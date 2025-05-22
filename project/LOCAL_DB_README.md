@@ -37,6 +37,16 @@ The local implementation provides a mock version of Supabase's realtime subscrip
 
 When you first run the application, it will seed the database with a sample project and task for easier testing.
 
+## Usage
+
+Since the application now uses the local database implementation by default, no additional configuration is needed to start using it. Simply run the application as usual:
+
+```
+npm run dev
+```
+
+The application will use the local database stored in localStorage for all operations.
+
 ## Development
 
 To switch back to using Supabase, you would need to modify `src/lib/supabase.ts` to use the original Supabase client instead of the local implementation.
