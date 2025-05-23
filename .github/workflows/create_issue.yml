@@ -13,5 +13,5 @@ jobs:
       
       - name: Create an Issue
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
         run: gh issue create -t "test create" -b "aaaa" -a "@copilot"
