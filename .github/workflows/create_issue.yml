@@ -1,0 +1,19 @@
+name: Create an issue
+on:
+  workflow_dispatch:
+    
+permissions:
+  contents: read
+  issues: write
+jobs:
+  createPullRequest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create an Issue
+        uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: .github/ISSUE_TEMPLATE/assign_copilot.md
