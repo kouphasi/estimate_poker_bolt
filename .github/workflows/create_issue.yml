@@ -16,5 +16,6 @@ jobs:
           GH_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
         run: |
           URL=$(gh issue create -t "create readme" -b "update readme or create readme" -a @me | grep "https://")
+          echo $URL
           gh issue edit $URL --add-assignee @copilot
           
