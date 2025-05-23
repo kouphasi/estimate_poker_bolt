@@ -14,7 +14,7 @@ jobs:
       - name: update gh
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew upgrade gh
+          brew install gh	
       
       - name: Create an Issue
         env:
