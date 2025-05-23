@@ -12,7 +12,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: update gh
-        run: brew upgrade gh
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          brew upgrade gh
       
       - name: Create an Issue
         env:
