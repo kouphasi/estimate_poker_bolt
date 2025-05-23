@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: update gh
+        run: brew upgrade gh
       
       - name: Create an Issue
         env:
