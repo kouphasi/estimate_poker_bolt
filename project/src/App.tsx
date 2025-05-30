@@ -7,6 +7,7 @@ import Projects from '@/pages/Projects';
 import Tasks from '@/pages/Tasks';
 import TaskEstimation from '@/pages/TaskEstimation';
 import ProjectLayout from '@/layouts/ProjectLayout';
+import Rout from '@/components/Route';
 
 function App() {
   const { user, setUser } = useAuthStore();
