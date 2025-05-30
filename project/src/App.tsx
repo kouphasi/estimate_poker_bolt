@@ -7,7 +7,7 @@ import Projects from '@/pages/Projects';
 import Tasks from '@/pages/Tasks';
 import TaskEstimation from '@/pages/TaskEstimation';
 import ProjectLayout from '@/layouts/ProjectLayout';
-import Rout from '@/components/Route';
+import MyComponent from '@/components/MyComponent';
 
 function App() {
   const { user, setUser } = useAuthStore();
@@ -40,7 +40,7 @@ function App() {
           <Route path=":projectId/tasks" element={<Tasks />} />
           <Route path=":projectId/tasks/:taskId" element={<TaskEstimation />} />
         </Route>
-        <Rout path="/">go to root</Rout>
+        <MyComponent path="/">go to root</MyComponent>
         <Route path="/estimation/:taskId" element={<TaskEstimation />} />
         <Route path="/" element={<Navigate to="/projects" />} />
       </Routes>
