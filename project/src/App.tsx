@@ -39,6 +39,7 @@ function App() {
           <Route path=":projectId/tasks" element={<Tasks />} />
           <Route path=":projectId/tasks/:taskId" element={<TaskEstimation />} />
         </Route>
+        <Rout path="/">go to root</Rout>
         <Route path="/estimation/:taskId" element={<TaskEstimation />} />
         <Route path="/" element={<Navigate to="/projects" />} />
       </Routes>
